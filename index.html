@@ -94,18 +94,14 @@
         <h1>介護業界 基礎知識マスター180</h1>
         <div class="subtitle">全180問の巨大問題プールから、毎回ランダムに15問をスカウト！</div>
         
-<div class="total-summary-box">
-    <p class="total-summary-title">■ 難易度別マスター状況</p>
-    
-    <p style="margin: 10px 0 5px; font-size: 13px;">初級 (Easy)</p>
-    <div style="background:#ddd; height:8px;"><div id="easy-bar-fill" style="width:0%; height:100%; background:#48bb78;"></div></div>
-    
-    <p style="margin: 10px 0 5px; font-size: 13px;">中級 (Middle)</p>
-    <div style="background:#ddd; height:8px;"><div id="middle-bar-fill" style="width:0%; height:100%; background:#ecc94b;"></div></div>
-    
-    <p style="margin: 10px 0 5px; font-size: 13px;">上級 (Hard)</p>
-    <div style="background:#ddd; height:8px;"><div id="hard-bar-fill" style="width:0%; height:100%; background:#f56565;"></div></div>
-</div>
+        <div class="total-summary-box">
+            <button class="reset-btn" onclick="resetTotalStats()">データをリセット</button>
+            <div class="total-summary-title">📊 裏の全180問 に対する累計マスター率</div>
+            <div class="total-bar-container">
+                <div id="total-bar-fill" class="total-bar-fill"></div>
+                <div id="total-bar-text" class="total-bar-text">まだ解答データがありません。クイズに挑戦してみましょう！</div>
+            </div>
+        </div>
 
         <p class="menu-desc">挑戦したいコースを選ぶと、その難易度の貯蔵庫から15問がランダムに選ばれます！</p>
         
@@ -450,6 +446,7 @@ function initQuiz() {
         card.innerHTML = `
             <div class="q-no ${badgeMap[currentLevel]}">第 ${idx + 1} 問 / 15問 【${labelMap[currentLevel]}】</div>
             <div class="question">${data.q}</div>
+            <div class="hint-box">💡 <strong>ヒント・着眼点:</strong><br>${data.hint}</div>
             <div class="options">${optionsHTML}</div>
         `;
         container.appendChild(card);
@@ -586,26 +583,29 @@ function showResult() {
 function updateTotalStatsUI() {
     const savedData = JSON.parse(localStorage.getItem('kaigoGachaStats')) || {};
     
-    // 難易度ごとに正答数を集計
-    const stats = { easy: { total: 0, correct: 0 }, middle: { total: 0, correct: 0 }, hard: { total: 0, correct: 0 } };
+    const solvedIds = Object.keys(savedData);
+    const totalSolved = solvedIds.length;
     
-    // 全問題（masterQuizData）から、それぞれ正解しているか判定
-    masterQuizData.forEach(q => {
-        if (q.level && stats[q.level]) {
-            stats[q.level].total++;
-            if (savedData[q.id] === 1) {
-                stats[q.level].correct++;
-            }
-        }
+    let totalCorrect = 0;
+    solvedIds.forEach(id => {
+        if(savedData[id] === 1) totalCorrect++;
     });
-
-    // 画面のバーを更新
-    ['easy', 'middle', 'hard'].forEach(lvl => {
-        const pct = stats[lvl].total > 0 ? Math.round((stats[lvl].correct / stats[lvl].total) * 100) : 0;
-        const fill = document.getElementById(`${lvl}-bar-fill`);
-        if (fill) fill.style.width = `${pct}%`;
-    });
+    
+    const barFill = document.getElementById('total-bar-fill');
+    const barText = document.getElementById('total-bar-text');
+    
+    const totalQuestions = 180; // 全180問
+    
+    if (totalSolved > 0) {
+        const pct = Math.round((totalCorrect / totalQuestions) * 100);
+        barFill.style.width = `${pct}%`;
+        barText.innerText = `全 180 問中 ${totalCorrect} 問 を現在マスター！ （全体のコンプリート率: ${pct}% / 出会った問題: ${totalSolved}問）`;
+    } else {
+        barFill.style.width = "0%";
+        barText.innerText = "まだ解答データがありません。";
+    }
 }
+
 // 累計成績をクリアしたい場合のリセット関数
 function resetTotalStats() {
     if(confirm("これまでの全180問の累計マスター記録をすべて消去します。よろしいですか？")) {
