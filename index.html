@@ -2,183 +2,51 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>介護業界 完璧マスタークイズ180</title>
     <style>
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f0f4f8; color: #2d3748; margin: 0; padding: 20px; line-height: 1.6; }
-        .container { max-width: 750px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        h1 { text-align: center; color: #1b365d; font-size: 24px; margin-bottom: 5px; }
-        .subtitle { text-align: center; color: #718096; font-size: 14px; margin-bottom: 30px; }
-        
-        /* 全体の累計サマリ用スタイル */
-        .total-summary-box { background: #edf2f7; border: 2px dashed #cbd5e0; padding: 20px; border-radius: 10px; margin-bottom: 30px; }
-        .total-summary-title { font-size: 16px; font-weight: bold; color: #2b6cb0; text-align: center; margin-top: 0; margin-bottom: 10px; }
-        .total-bar-container { background: #e2e8f0; border-radius: 8px; height: 24px; width: 100%; overflow: hidden; position: relative; }
-        .total-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #3182ce, #4299e1); transition: width 0.8s ease-out; }
-        .total-bar-text { position: absolute; width: 100%; text-align: center; top: 0; left: 0; line-height: 24px; font-size: 13px; font-weight: bold; color: #2d3748; }
-        .reset-btn { background: #e53e3e; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; float: right; margin-top: -5px; }
-        .reset-btn:hover { background: #c53030; }
-
-        /* コース選択画面 */
-        .menu-screen { display: block; }
-        .menu-desc { font-size: 15px; color: #4a5568; margin-bottom: 25px; text-align: center; }
-        
-        .level-section { margin-bottom: 20px; background: #f7fafc; padding: 20px; border-radius: 10px; border: 1px solid #e2e8f0; }
-        .level-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; text-align: left; padding-left: 10px; }
-        .title-easy { color: #234e52; border-left: 5px solid #319795; }
-        .title-normal { color: #2b6cb0; border-left: 5px solid #2b6cb0; }
-        .title-hard { color: #744210; border-left: 5px solid #b7791f; }
-        
-        .level-btn { display: block; width: 100%; padding: 18px 10px; border: none; border-radius: 8px; font-size: 17px; font-weight: bold; color: #fff; cursor: pointer; transition: transform 0.2s, opacity 0.2s; text-align: center; box-sizing: border-box; }
-        .level-btn:hover { transform: translateY(-2px); opacity: 0.9; }
-        .btn-bg-easy { background: #319795; }
-        .btn-bg-normal { background: #2b6cb0; }
-        .btn-bg-hard { background: #b7791f; }
-        .btn-desc { font-size: 12px; font-weight: normal; margin-top: 4px; opacity: 0.9; }
-        
-        /* クイズ進行エリア */
-        .quiz-screen { display: none; }
-        .progress { text-align: center; font-size: 14px; color: #4a5568; font-weight: bold; margin-bottom: 20px; }
-        .quiz-card { display: none; }
+        body { font-family: sans-serif; background: #f0f4f8; padding: 20px; }
+        .container { max-width: 650px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .bar-container { height: 15px; background: #ddd; border-radius: 10px; overflow: hidden; margin: 5px 0 15px; }
+        .bar-fill { height: 100%; background: #48bb78; width: 0%; transition: width 0.5s; }
+        .menu-btn { display: block; width: 100%; padding: 12px; margin: 10px 0; background: #3182ce; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .quiz-card { display: none; margin-bottom: 20px; }
         .quiz-card.active { display: block; }
-        .q-no { font-weight: bold; color: #fff; font-size: 13px; display: inline-block; padding: 3px 10px; border-radius: 4px; margin-bottom: 5px; }
-        .badge-easy { background: #319795; }
-        .badge-normal { background: #2b6cb0; }
-        .badge-hard { background: #b7791f; }
-        .question { font-size: 18px; font-weight: bold; margin: 15px 0 20px 0; }
-        .hint-box { background: #edf2f7; padding: 12px; border-radius: 6px; font-size: 13px; margin-bottom: 20px; color: #4a5568; border-left: 4px solid #cbd5e0; }
-        .options { display: flex; flex-direction: column; gap: 12px; }
-        .option-label { background: #f7fafc; border: 2px solid #e2e8f0; padding: 14px; border-radius: 8px; font-size: 15px; cursor: pointer; transition: all 0.2s; font-weight: 500; display: flex; align-items: center; gap: 10px; }
-        .option-label:hover { background: #edf2f7; border-color: #cbd5e0; }
-        .option-label input { margin: 0; transform: scale(1.2); cursor: pointer; }
-        .nav-btns { display: flex; justify-content: space-between; margin-top: 30px; gap: 15px; }
-        .btn { flex: 1; padding: 12px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; transition: background 0.2s; }
-        .btn-prev { background: #cbd5e0; color: #4a5568; }
-        .btn-prev:hover { background: #e2e8f0; }
-        .btn-next { background: #1b365d; color: #fff; }
-        .btn-next:hover { background: #2c5282; }
-        .btn-submit { background: #e53e3e; color: #fff; }
-        .btn-submit:hover { background: #c53030; }
-        
-        /* 結果画面 */
-        .result-screen { display: none; }
-        .score-box { text-align: center; background: #ebf8ff; border: 2px solid #bee3f8; padding: 20px; border-radius: 12px; margin: 20px 0; }
-        .score { font-size: 54px; font-weight: bold; color: #2b6cb0; }
-        .comment { font-size: 16px; font-weight: bold; color: #2d3748; margin-top: 10px; }
-        
-        /* サマリ（カテゴリ分析）エリア */
-        .summary-title { font-size: 18px; font-weight: bold; color: #2d3748; margin-top: 30px; border-bottom: 2px solid #2b6cb0; padding-bottom: 5px; }
-        .summary-box { background: #f7fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 10px; margin-top: 15px; }
-        .category-row { margin-bottom: 15px; }
-        .category-row:last-child { margin-bottom: 0; }
-        .category-name { font-size: 14px; font-weight: bold; margin-bottom: 5px; display: flex; justify-content: space-between; }
-        .bar-container { background: #e2e8f0; border-radius: 6px; height: 16px; width: 100%; overflow: hidden; }
-        .bar-fill { height: 100%; width: 0%; transition: width 0.6s ease-out; }
-        .bg-system { background: #4299e1; }
-        .bg-care { background: #48bb78; }
-        .bg-biz { background: #ed8936; }
-
-        .review-title { font-size: 18px; font-weight: bold; color: #2d3748; margin-top: 40px; border-bottom: 2px solid #1b365d; padding-bottom: 5px; }
-        .review-item { background: #fff; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; margin-top: 15px; }
-        .review-q { font-weight: bold; font-size: 15px; margin-bottom: 8px; }
-        .your-ans { color: #e53e3e; font-weight: bold; font-size: 13px; }
-        .correct-ans { color: #38a169; font-weight: bold; font-size: 13px; }
-        .review-exp { background: #f7fafc; padding: 10px; border-radius: 6px; font-size: 13px; margin-top: 8px; color: #4a5568; }
-        .home-btn { display: block; width: 220px; margin: 30px auto 0 auto; background: #4a5568; color: #fff; border: none; padding: 12px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; }
+        .option-label { display: block; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; cursor: pointer; }
+        #result-area { display: none; }
+        .review-item { margin-bottom: 20px; padding: 15px; border-radius: 8px; border-left: 5px solid #ccc; background: #f9f9f9; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="menu-area" class="menu-screen">
-        <h1>介護業界 基礎知識マスター180</h1>
-        <div class="subtitle">全180問の巨大問題プールから、毎回ランダムに15問をスカウト！</div>
-        
-<div class="total-summary-box">
-    <p class="total-summary-title">■ 難易度別マスター状況</p>
+<div class="container" id="menu-area">
+    <h1>介護業界 完璧マスタークイズ180</h1>
+    <p>全180問の巨大問題プールから、毎回ランダムに15問をスカウト！</p>
+    <h3>■難易度別マスター状況</h3>
+    初級: <div class="bar-container"><div id="easy-bar-fill" class="bar-fill"></div></div>
+    中級: <div class="bar-container"><div id="middle-bar-fill" class="bar-fill"></div></div>
+    上級: <div class="bar-container"><div id="hard-bar-fill" class="bar-fill"></div></div>
     
-    <p style="margin: 10px 0 5px; font-size: 13px;">初級 (Easy)</p>
-    <div style="background:#ddd; height:8px;"><div id="easy-bar-fill" style="width:0%; height:100%; background:#48bb78;"></div></div>
-    
-    <p style="margin: 10px 0 5px; font-size: 13px;">中級 (Middle)</p>
-    <div style="background:#ddd; height:8px;"><div id="middle-bar-fill" style="width:0%; height:100%; background:#ecc94b;"></div></div>
-    
-    <p style="margin: 10px 0 5px; font-size: 13px;">上級 (Hard)</p>
-    <div style="background:#ddd; height:8px;"><div id="hard-bar-fill" style="width:0%; height:100%; background:#f56565;"></div></div>
+    <button class="menu-btn" onclick="startLevel('easy')">🟢 初級スタート</button>
+    <button class="menu-btn" onclick="startLevel('middle')">🔵 中級スタート</button>
+    <button class="menu-btn" onclick="startLevel('hard')">🟠 上級スタート</button>
 </div>
 
-        <p class="menu-desc">挑戦したいコースを選ぶと、その難易度の貯蔵庫から15問がランダムに選ばれます！</p>
-        
-        <div class="level-section">
-            <div class="level-title title-easy">🟢 初級コース</div>
-            <button class="level-btn btn-bg-easy" onclick="startLevelGacha('easy')">
-                初級に挑戦する (15問)
-                <div class="btn-desc">※全60問の貯蔵庫からランダムに選ばれます</div>
-            </button>
-        </div>
+<div class="container" id="quiz-area" style="display:none;">
+    <div id="questions-container"></div>
+    <button id="next-btn" class="menu-btn" onclick="checkAndNext()">次へ ▶</button>
+</div>
 
-        <div class="level-section">
-            <div class="level-title title-normal">🔵 中級コース</div>
-            <button class="level-btn btn-bg-normal" onclick="startLevelGacha('normal')">
-                中級に挑戦する (15問)
-                <div class="btn-desc">※全60問の貯蔵庫からランダムに選ばれます</div>
-            </button>
-        </div>
-
-        <div class="level-section">
-            <div class="level-title title-hard">🟠 上級コース</div>
-            <button class="level-btn btn-bg-hard" onclick="startLevelGacha('hard')">
-                上級に挑戦する (15問)
-                <div class="btn-desc">※全60問の貯蔵庫からランダムに選ばれます</div>
-            </button>
-        </div>
-    </div>
-
-    <div id="quiz-area" class="quiz-screen">
-        <h1 id="quiz-title">コース名</h1>
-        <div class="progress" id="progress-text">第 1 問 / 15 問</div>
-        <div id="questions-container"></div>
-        <div class="nav-btns">
-            <button class="btn btn-prev" id="btn-prev" onclick="moveQuestion(-1)" style="visibility: hidden;">◀ 前へ</button>
-            <button class="btn btn-next" id="btn-next" onclick="moveQuestion(1)">次へ ▶</button>
-        </div>
-    </div>
-
-    <div id="result-area" class="result-screen">
-        <h1>クイズ結果発表</h1>
-        <div class="score-box">
-            <p>今回の正解数は...</p>
-            <div class="score"><span id="correct-count">0</span> / 15</div>
-            <p class="comment" id="result-comment"></p>
-        </div>
-        
-        <div class="summary-title">📊 今回引いた15問の分野分析</div>
-        <div class="summary-box">
-            <div class="category-row">
-                <div class="category-name"><span>⚖️ 制度・仕組み系（保険ルール・行政など）</span><span id="txt-cat-system">0/0 (0%)</span></div>
-                <div class="bar-container"><div id="bar-cat-system" class="bar-fill bg-system"></div></div>
-            </div>
-            <div class="category-row">
-                <div class="category-name"><span>🤝 現場・ケア・資格系（サービス・認知症・介護技術）</span><span id="txt-cat-care">0/0 (0%)</span></div>
-                <div class="bar-container"><div id="bar-cat-care" class="bar-fill bg-care"></div></div>
-            </div>
-            <div class="category-row">
-                <div class="category-name"><span>🏢 経営・DX・課題系（介護報酬・IT・人材・2025年問題）</span><span id="txt-cat-biz">0/0 (0%)</span></div>
-                <div class="bar-container"><div id="bar-cat-biz" class="bar-fill bg-biz"></div></div>
-            </div>
-        </div>
-        
-        <div class="review-title">🔍 今回引いた問題の正解と解説</div>
-        <div id="review-container"></div>
-        
-        <button class="home-btn" onclick="backToMenu()">コース選択に戻る</button>
-    </div>
+<div class="container" id="result-area">
+    <h2>結果発表！</h2>
+    <p id="score-text"></p>
+    <div id="review-list"></div>
+    <button class="menu-btn" onclick="location.reload()">メニューに戻る</button>
 </div>
 
 <script>
-// 【大幅増量】問題データ(各難易度60問、合計180問のデータベース)
+// 1. 全データ（ここにこれまで頂いた180問を貼り付けてください）
 const masterQuizData = {
-    easy: [
+easy: [/
         { id: "e1", q: "介護保険サービスを原則として利用できる年齢は何歳から？", hint: "一般的な「高齢者」の年齢です。", options: ["60歳以上", "65歳以上", "70歳以上"], ans: 1, exp: "原則「65歳以上」です。40〜64歳でも特定の16疾病（若年性認知症など）があれば対象。", cat: "system" },
         { id: "e2", q: "高齢者が支払う介護保険サービスの自己負担割合は原則何割？", hint: "医療保険（3割）より低く設定されています。", options: ["原則1割", "原則2割", "原則3割"], ans: 0, exp: "原則は「1割」負担です。所得に応じて2割、最大3割まで上がります。", cat: "system" },
         { id: "e3", q: "介護保険のサービスを利用するために必要な自治体の判定は？", hint: "これがないと高齢者でも1割負担で使えません。", options: ["要介護認定", "健康状態証明", "生活困窮認定"], ans: 0, exp: "「要介護認定（または要支援認定）」です。", cat: "system" },
@@ -241,8 +109,8 @@ const masterQuizData = {
         { id: "e58", q: "お年寄りが水分を摂る際、むせやすいお茶や水に混ぜて、とろみをつける粉末の商品を何という？", hint: "「とろみ」をつけるための調整食です。", options: ["とろみ調整食品（とろみ剤）", "プロテインパウダー", "ゼラチン微粉末"], ans: 0, exp: "「とろみ剤（とろみ調整食品）」です。誤嚥を防ぐために現場で必須のアイテムです。", cat: "care" },
         { id: "e59", q: "介護が必要になった高齢者の尊厳を守り、その人らしい生活を送り続けられるように支援する基本理念は？", hint: "クオリティ・オブ・〇〇〇の日本語訳です。", options: ["生活の質（QOL）の向上", "効率的作業の追求", "完全管理型の福祉"], ans: 0, exp: "「生活の質（QOL：Quality of Life）の向上」です。単に生き長らえるだけでなく豊かな人生を支えます。", cat: "care" },
         { id: "e60", q: "高齢者が入浴する際、急激な温度変化（寒い脱衣所から熱い湯船など）によって血圧が乱高下し、失神や心臓麻痺を起こす現象は？", hint: "冬場に非常に多く発生する危険な現象です。", options: ["ヒートショック", "デトックスエフェクト", "サーマルバースト"], ans: 0, exp: "「ヒートショック」です。脱衣所や浴室を事前に温めておくことで予防します。", cat: "care" }
-    ],
-    normal: [
+    */],
+    middle: [/*
         { id: "n1", q: "訪問介護で、オムツ交換や入浴介助など「利用者の体に直接触れるサポート」を何と呼ぶ？", hint: "身体へのアプローチです。", options: ["身体介護", "生活援助", "医療介助"], ans: 0, exp: "「身体介護」です。専門技術を要するため生活援助より高く設定されています。", cat: "care" },
         { id: "n2", q: "訪問介護で、調理、掃除、洗濯、買い物代行など「家事のサポート」を何と呼ぶ？", hint: "生活の援助を行います。", options: ["身体介護", "生活援助", "福祉サポート"], ans: 1, exp: "「生活援助」です。", cat: "care" },
         { id: "n3", q: "ヘルパーが利用者の同居家族のために夕飯を作ったり、家族の部屋を掃除することは許される？", hint: "介護保険のルールの基本です。", options: ["家族の分もまとめてやればOK", "追加料金を払えばOK", "原則として絶対に許されない（禁止）"], ans: 2, exp: "「許されない（禁止）」。介護保険は契約者「本本人のみ」が対象なため家族への家事は違反です。", cat: "system" },
@@ -305,8 +173,8 @@ const masterQuizData = {
         { id: "n58", q: "生活保護を受給している高齢者が介護サービスを利用する場合、その自己負担分（1〜3割）は誰が支払うルール？", hint: "生活保護の扶助の仕組みです。", options: ["福祉事務所（生活保護の公費・介護扶助）が全額負担する", "本人が年金から支払う", "ケアマネジャーが立て替える"], ans: 0, exp: "「生活保護の介護扶助（公費）」から全額支払われるため、本人の実質負担は0円になります。", cat: "system" },
         { id: "n59", q: "高齢者が自分の力でスプーンを持ったり、トイレに行ったりする「日常生活を営む上で必要な基本動作」の能力をアルファベット3文字で何という？", hint: "アクティビティーズ・オブ・デイリー・リビングの略です。", options: ["ADL", "QOL", "DX"], ans: 0, exp: "「ADL（Activities of Daily Living：日常生活動作）」と言います。食事・入浴・移動などが含まれます。", cat: "care" },
         { id: "n60", q: "介護保険において、車椅子や介護ベッドなどの福祉用具をレンタルした際の、利用者が支払う月々の基本負担割合は？", hint: "通常の介護サービスと同じ割合が適用されます。", options: ["通常のサービスと同じ（原則1割、所得に応じ2〜3割）", "レンタルは一律で全額実費（10割）", "一律で毎月500円"], ans: 0, exp: "「通常の介護サービスと同じ負担割合」です。例えば月1万のレンタル代なら、原則1,000円で借りられます。", cat: "system" }
-    ],
-    hard: [
+    */],
+    hard: [/*
         { id: "h1", q: "本人の自己負担を除いた、残りの費用の財源（国が支払う7〜9割分）の内訳はどうなっている？", hint: "保険料と税金がどのような比率かです。", options: ["すべて税金", "すべて現役世代の保険料", "介護保険料50%：税金（公費）50%で折半"], ans: 2, exp: "「保険料50%：税金50%」の折半です。国、都道府県、市区町村がそれぞれ税金を出し合っています。", cat: "system" },
         { id: "h2", q: "国が定める介護の価格表「介護報酬」は、原則何年に一度改定される？", hint: "オリンピックより短いスパンの大イベントです。", options: ["毎年", "3年に一度", "5年に一度"], ans: 1, exp: "原則「3年に一度」。（直近では2024年に改定、2026年にも臨時の賃上げ改定がありました）", cat: "biz" },
         { id: "h3", q: "国（国保連）から介護事業所に介護報酬（7〜9割分）が振り込まれるのは、サービス提供の何ヶ月後？", hint: "介護ビジネスにおけるキャッシュフローの基本です。", options: ["当月末", "約1ヶ月後", "約2ヶ月後"], ans: 2, exp: "約「2ヶ月後」。（4月提供分は5月に請求、6月下旬に振込。開業初期に資金繰り注意と言われる理由です）", cat: "biz" },
@@ -369,284 +237,90 @@ const masterQuizData = {
         { id: "h58", q: "介護事業者に対する「実地指導（運営指導）」において、主に厳しくチェックされる「3つの基準」とは何？", hint: "人員、設備、そしてあと1つは？", options: ["①人員基準、②設備基準、③運営基準（および報酬請求の適正さ）", "①料理の味、②職員の身だしなみ、③建物の豪華さ", "①創業年数、②資本金の多さ、③パンフレットのデザイン"], ans: 0, exp: "「人員・設備・運営」の3大基準です。これらに適合していないと、報酬返還や行政処分の対象になります。", cat: "biz" },
         { id: "h59", q: "有料老人ホームの経営において、入居時に高額な「入居一時金（前払金）」を受け取った場合、入居者が短期間で退去・死亡した際に、未経過分を返還しなければならない法律上のルールを何という？", hint: "返還するための「償」却に関するルールです。", options: ["短期解約時の返還金制度（想定居住期間による日割り償却ルール）", "一発償却の免除特例", "クーリングオフ一律適用"], ans: 0, exp: "老人福祉法で「前払金の返還ルール」が義務付けられており、想定期間内の退去の際は、未経過分の前払金を返さなければなりません。", cat: "biz" },
         { id: "h60", q: "介護サービスにおいて、1ヶ月の自己負担額が上限（例：一般家庭なら44,400円など）を超えた場合、超えた分が申請によって後から払い戻される医療保険とそっくりの制度は？", hint: "高額な介護サービス費用の「負担」を軽減する「サービス」です。", options: ["高額介護サービス費制度", "介護高額給付特例", "福祉費用払い戻し金"], ans: 0, exp: "「高額介護サービス費制度」です。これにより、重度になって多くのサービスを使っても、自己負担が青天井になるのを防ぎます。", cat: "system" }
-    ]
+    */]
 };
+// 2. データ構造の初期化
+Object.keys(masterQuizData).forEach(lvl => {
+    masterQuizData[lvl].forEach(q => q.level = lvl);
+});
 
-let currentLevel = 'easy';
-let currentIdx = 0;
-let userAnswers = [];
-let activeQuestions = [];
+// 3. ロジック
+let currentIdx = 0, activeQuestions = [], userAnswers = [];
 
-// ページ読み込み時に累計正答率を計算して表示
-window.onload = function() {
-    updateTotalStatsUI();
-};
-
-// 配列をランダムにシャッフルする関数（フィッシャー・イェーツ）
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
+function updateTotalStatsUI() {
+    const saved = JSON.parse(localStorage.getItem('kaigoGachaStats')) || {};
+    ['easy', 'middle', 'hard'].forEach(lvl => {
+        let total = 0, correct = 0;
+        masterQuizData[lvl].forEach(q => {
+            total++;
+            if(saved[q.id] === 1) correct++;
+        });
+        const pct = total > 0 ? Math.round((correct/total)*100) : 0;
+        document.getElementById(lvl + '-bar-fill').style.width = pct + '%';
+    });
 }
 
-// 【新機能】システム：全60問のプールから完全にランダムで15問を引っ張り出す
-function startLevelGacha(level) {
-    currentLevel = level;
-    currentIdx = 0;
-    
-    // そのコースの全60問をコピーして丸ごとシャッフル
-    let allQuestionsInPool = [...masterQuizData[level]];
-    let shuffledPool = shuffle(allQuestionsInPool);
-    
-    // 【！】シャッフルされたプールから先頭の「15問だけ」を切り出して今回のクイズにする
-    activeQuestions = shuffledPool.slice(0, 15);
-    
-    userAnswers = new Array(activeQuestions.length).fill(null);
-    
+function startLevel(lvl) {
+    activeQuestions = [...masterQuizData[lvl]].sort(() => Math.random() - 0.5).slice(0, 15);
+    userAnswers = new Array(15).fill(null);
     document.getElementById('menu-area').style.display = 'none';
     document.getElementById('quiz-area').style.display = 'block';
-    
-    const titleMap = { easy: '🟢 初級コース', normal: '🔵 中級コース', hard: '🟠 上級コース' };
-    document.getElementById('quiz-title').innerText = titleMap[level];
-    
-    initQuiz();
+    render();
 }
 
-function initQuiz() {
+function render() {
     const container = document.getElementById('questions-container');
-    container.innerHTML = '';
-    
-    const badgeMap = { easy: 'badge-easy', normal: 'badge-normal', hard: 'badge-hard' };
-    const labelMap = { easy: '初級', normal: '中級', hard: '上級' };
-    
-    activeQuestions.forEach((data, idx) => {
-        const card = document.createElement('div');
-        card.className = `quiz-card ${idx === 0 ? 'active' : ''}`;
-        card.id = `q-card-${idx}`;
-        
-        // 選択肢の並び順もシャッフルする
-        let optsObj = data.options.map((opt, i) => {
-            return { text: opt, isCorrect: i === data.ans };
-        });
-        optsObj = shuffle(optsObj);
-        
-        // シャッフル後の新しい「正解インデックス」を見つけてデータに一時保存
-        const newAnsIdx = optsObj.findIndex(o => o.isCorrect);
-        data.currentAnsIdx = newAnsIdx;
-        data.currentOptions = optsObj.map(o => o.text);
-        
-        let optionsHTML = '';
-        data.currentOptions.forEach((opt, oIdx) => {
-            optionsHTML += `
-                <label class="option-label" id="label-${idx}-${oIdx}">
-                    <input type="radio" name="q-${idx}" value="${oIdx}" onclick="selectAnswer(${idx}, ${oIdx})">
-                    ${opt}
+    container.innerHTML = activeQuestions.map((q, i) => `
+        <div class="quiz-card ${i === currentIdx ? 'active' : ''}">
+            <h3>第 ${i+1} 問</h3>
+            <p>${q.q}</p>
+            ${q.options.map((opt, oIdx) => `
+                <label class="option-label">
+                    <input type="radio" name="q" onclick="userAnswers[currentIdx]=${oIdx}"> ${opt}
                 </label>
-            `;
-        });
-        
-        card.innerHTML = `
-            <div class="q-no ${badgeMap[currentLevel]}">第 ${idx + 1} 問 / 15問 【${labelMap[currentLevel]}】</div>
-            <div class="question">${data.q}</div>
-            <div class="options">${optionsHTML}</div>
-        `;
-        container.appendChild(card);
-    });
-    updateUI();
+            `).join('')}
+        </div>
+    `).join('');
 }
 
-function selectAnswer(qIdx, selectedIdx) {
-    userAnswers[qIdx] = selectedIdx;
-    
-    const card = document.getElementById(`q-card-${qIdx}`);
-    const labels = card.querySelectorAll('.option-label');
-    labels.forEach((l, idx) => {
-        if(idx === selectedIdx) {
-            l.style.background = "#ebf8ff";
-            l.style.borderColor = "#3182ce";
-        } else {
-            l.style.background = "#f7fafc";
-            l.style.borderColor = "#e2e8f0";
-        }
-    });
-}
-
-function moveQuestion(step) {
-    if (step === 1 && userAnswers[currentIdx] === null) {
-        alert("解答を選択してください！わからない場合は予想で選んでみましょう。");
-        return;
-    }
-
-    document.getElementById(`q-card-${currentIdx}`).classList.remove('active');
-    currentIdx += step;
-    
-    if (currentIdx >= activeQuestions.length) {
-        showResult();
+function checkAndNext() {
+    if(userAnswers[currentIdx] === null) return alert("回答を選んでください！");
+    if(currentIdx < 14) {
+        document.querySelectorAll('.quiz-card')[currentIdx].classList.remove('active');
+        currentIdx++;
+        document.querySelectorAll('.quiz-card')[currentIdx].classList.add('active');
     } else {
-        document.getElementById(`q-card-${currentIdx}`).classList.add('active');
-        updateUI();
+        showResults();
     }
 }
 
-function updateUI() {
-    document.getElementById('progress-text').innerText = `第 ${currentIdx + 1} 問 / ${activeQuestions.length} 問`;
+function showResults() {
+    let score = 0;
+    let saved = JSON.parse(localStorage.getItem('kaigoGachaStats')) || {};
     
-    const prevBtn = document.getElementById('btn-prev');
-    const nextBtn = document.getElementById('btn-next');
-    
-    prevBtn.style.visibility = currentIdx === 0 ? 'hidden' : 'visible';
-    
-    if (currentIdx === activeQuestions.length - 1) {
-        nextBtn.innerText = "解答を送信して採点 ➔";
-        nextBtn.className = "btn btn-submit";
-    } else {
-        nextBtn.innerText = "次へ ▶";
-        nextBtn.className = "btn btn-next";
-    }
-}
-
-function showResult() {
     document.getElementById('quiz-area').style.display = 'none';
     document.getElementById('result-area').style.display = 'block';
     
-    let score = 0;
-    const reviewContainer = document.getElementById('review-container');
-    reviewContainer.innerHTML = '';
-    
-    const catStats = {
-        system: { correct: 0, total: 0 },
-        care: { correct: 0, total: 0 },
-        biz: { correct: 0, total: 0 }
-    };
-    
-    // 累計保存用のオブジェクトを取り出す
-    let savedData = JSON.parse(localStorage.getItem('kaigoGachaStats')) || {};
-
-    activeQuestions.forEach((data, idx) => {
-        const isCorrect = userAnswers[idx] === data.currentAnsIdx;
-        if (isCorrect) score++;
-        
-        // 問題固有のID（e1〜h60）を使って、最新の結果をローカルストレージへ記録
-        savedData[data.id] = isCorrect ? 1 : 0;
-        
-        const qCat = data.cat || 'system';
-        catStats[qCat].total++;
-        if (isCorrect) {
-            catStats[qCat].correct++;
-        }
-        
-        const reviewItem = document.createElement('div');
-        reviewItem.className = 'review-item';
-        reviewItem.style.borderLeft = isCorrect ? "5px solid #38a169" : "5px solid #e53e3e";
-        
-        reviewItem.innerHTML = `
-            <div class="review-q">問題：${data.q} 【${isCorrect ? '⭕ 正解' : '❌ 不正解'}】</div>
-            <div class="your-ans">あなたの回答: ${userAnswers[idx] !== null ? data.currentOptions[userAnswers[idx]] : '未回答'}</div>
-            <div class="correct-ans">正解の回答: ${data.currentOptions[data.currentAnsIdx]}</div>
-            <div class="review-exp">💡 <strong>解説:</strong><br>${data.exp}</div>
+    let html = activeQuestions.map((q, i) => {
+        const isCorrect = userAnswers[i] === q.ans;
+        if(isCorrect) { score++; saved[q.id] = 1; }
+        return `
+            <div class="review-item" style="border-left-color: ${isCorrect ? '#48bb78' : '#e53e3e'}">
+                <p><strong>${isCorrect ? '⭕ 正解！' : '❌ 不正解'}</strong></p>
+                <p>${q.q}</p>
+                <p>正解: ${q.options[q.ans]}</p>
+                <p><small>💡解説: ${q.exp}</small></p>
+            </div>
         `;
-        reviewContainer.appendChild(reviewItem);
-    });
+    }).join('');
     
-    // ブラウザにデータを保存
-    localStorage.setItem('kaigoGachaStats', JSON.stringify(savedData));
-    
-    document.getElementById('correct-count').innerText = score;
-    
-    // 今回引いた15問のカテゴリ別ゲージ更新
-    ['system', 'care', 'biz'].forEach(cat => {
-        const stats = catStats[cat];
-        const txtEl = document.getElementById(`txt-cat-${cat}`);
-        const barEl = document.getElementById(`bar-cat-${cat}`);
-        if (stats.total > 0) {
-            const pct = Math.round((stats.correct / stats.total) * 100);
-            txtEl.innerText = `${stats.correct} / ${stats.total} 問 (${pct}%)`;
-            barEl.style.width = `${pct}%`;
-        } else {
-            txtEl.innerText = "出題なし";
-            barEl.style.width = "0%";
-        }
-    });
-    
-    const comment = document.getElementById('result-comment');
-    const percent = (score / activeQuestions.length) * 100;
-    
-    if (percent === 100) { comment.innerText = "神引き＆パーフェクト！素晴らしい！今回の15問は完璧です！"; }
-    else if (percent >= 80) { comment.innerText = "優秀です！何が出ても動じない実力がついてきています！"; }
-    else if (percent >= 60) { comment.innerText = "合格ラインクリア！知らない問題が出たら解説を読んでストックしていきましょう。"; }
-    else { comment.innerText = "引き合わせで、苦手なテーマが集まったかもしれません。次行ってみよう！"; }
-
-    // トップ画面の進捗率を更新
+    localStorage.setItem('kaigoGachaStats', JSON.stringify(saved));
+    document.getElementById('score-text').innerText = `15問中 ${score} 問正解しました！`;
+    document.getElementById('review-list').innerHTML = html;
     updateTotalStatsUI();
 }
 
-// 全180問中の正答率（コンプリート率）を計算してトップのUIに反映する関数
-function updateTotalStatsUI() {
-const savedData = JSON.parse(localStorage.getItem('kaigoGachaStats')) || {};
-    
-    // 集計用の箱
-    const stats = { 
-        easy: { total: 0, correct: 0 }, 
-        middle: { total: 0, correct: 0 }, 
-        hard: { total: 0, correct: 0 } 
-    };
-    
-    // 【修正箇所】オブジェクトの各キー（easy, middle, hard）を回して中身の配列を処理する
-    Object.keys(masterQuizData).forEach(level => {
-        // 各レベルの配列データを取り出す
-        const questions = masterQuizData[level];
-        
-        questions.forEach(q => {
-            // statsのキーとlevelが一致するようにする
-            if (stats[level]) {
-                stats[level].total++;
-                if (savedData[q.id] === 1) {
-                    stats[level].correct++;
-                }
-            }
-        });
-    });
-
-    // 画面のバーを更新
-    ['easy', 'middle', 'hard'].forEach(lvl => {
-        const pct = stats[lvl].total > 0 ? Math.round((stats[lvl].correct / stats[lvl].total) * 100) : 0;
-        const el = document.getElementById(lvl + '-bar-fill');
-        if (el) {
-            el.style.width = pct + '%';
-        }
-    });
-}
-    // 画面のバーを更新（HTMLのIDが easy-bar-fill, middle-bar-fill, hard-bar-fill となっている前提）
-    ['easy', 'middle', 'hard'].forEach(lvl => {
-        const pct = stats[lvl].total > 0 ? Math.round((stats[lvl].correct / stats[lvl].total) * 100) : 0;
-        const fill = document.getElementById(`${lvl}-bar-fill`);
-        if (fill) {
-            fill.style.width = `${pct}%`;
-        }
-    });
-}
-
-    // 画面のバーを更新
-    ['easy', 'middle', 'hard'].forEach(lvl => {
-        const pct = stats[lvl].total > 0 ? Math.round((stats[lvl].correct / stats[lvl].total) * 100) : 0;
-        const fill = document.getElementById(`${lvl}-bar-fill`);
-        if (fill) fill.style.width = `${pct}%`;
-    });
-}
-// 累計成績をクリアしたい場合のリセット関数
-function resetTotalStats() {
-    if(confirm("これまでの全180問の累計マスター記録をすべて消去します。よろしいですか？")) {
-        localStorage.removeItem('kaigoGachaStats');
-        updateTotalStatsUI();
-    }
-}
-
-function backToMenu() {
-    document.getElementById('result-area').style.display = 'none';
-    document.getElementById('menu-area').style.display = 'block';
-}
+updateTotalStatsUI();
 </script>
 </body>
 </html>
