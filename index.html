@@ -584,20 +584,26 @@ function showResult() {
 
 // 全180問中の正答率（コンプリート率）を計算してトップのUIに反映する関数
 function updateTotalStatsUI() {
-    const savedData = JSON.parse(localStorage.getItem('kaigoGachaStats')) || {};
-    
-    // 難易度ごとに正答数を集計
+    cconst savedData = JSON.parse(localStorage.getItem('kaigoGachaStats')) || {};
     const stats = { easy: { total: 0, correct: 0 }, middle: { total: 0, correct: 0 }, hard: { total: 0, correct: 0 } };
     
-    // 全問題（masterQuizData）から、それぞれ正解しているか判定
-    masterQuizData.forEach(q => {
-        if (q.level && stats[q.level]) {
-            stats[q.level].total++;
+    // 【修正箇所】オブジェクトの各キー（easy, middle, hard）をループして処理する
+    Object.keys(masterQuizData).forEach(lvl => {
+        masterQuizData[lvl].forEach(q => {
+            stats[lvl].total++;
             if (savedData[q.id] === 1) {
-                stats[q.level].correct++;
+                stats[lvl].correct++;
             }
-        }
+        });
     });
+
+    // 画面のバーを更新
+    ['easy', 'middle', 'hard'].forEach(lvl => {
+        const pct = stats[lvl].total > 0 ? Math.round((stats[lvl].correct / stats[lvl].total) * 100) : 0;
+        const fill = document.getElementById(`${lvl}-bar-fill`);
+        if (fill) fill.style.width = `${pct}%`;
+    });
+}
 
     // 画面のバーを更新
     ['easy', 'middle', 'hard'].forEach(lvl => {
