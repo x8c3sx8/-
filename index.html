@@ -586,27 +586,38 @@ function showResult() {
 function updateTotalStatsUI() {
 const savedData = JSON.parse(localStorage.getItem('kaigoGachaStats')) || {};
     
-    // 難易度ごとに正答数を集計
-    // ※ HTML側のIDと一致させるため、キーは 'easy', 'middle', 'hard' とします
+    // 集計用の箱
     const stats = { 
         easy: { total: 0, correct: 0 }, 
         middle: { total: 0, correct: 0 }, 
         hard: { total: 0, correct: 0 } 
     };
     
-    // masterQuizData（オブジェクト）の各レベルをループして集計
-    Object.keys(masterQuizData).forEach(levelKey => {
-        // もしデータ内に levelKey が存在すれば集計
-        if (stats[levelKey]) {
-            masterQuizData[levelKey].forEach(q => {
-                stats[levelKey].total++;
+    // 【修正箇所】オブジェクトの各キー（easy, middle, hard）を回して中身の配列を処理する
+    Object.keys(masterQuizData).forEach(level => {
+        // 各レベルの配列データを取り出す
+        const questions = masterQuizData[level];
+        
+        questions.forEach(q => {
+            // statsのキーとlevelが一致するようにする
+            if (stats[level]) {
+                stats[level].total++;
                 if (savedData[q.id] === 1) {
-                    stats[levelKey].correct++;
+                    stats[level].correct++;
                 }
-            });
-        }
+            }
+        });
     });
 
+    // 画面のバーを更新
+    ['easy', 'middle', 'hard'].forEach(lvl => {
+        const pct = stats[lvl].total > 0 ? Math.round((stats[lvl].correct / stats[lvl].total) * 100) : 0;
+        const el = document.getElementById(lvl + '-bar-fill');
+        if (el) {
+            el.style.width = pct + '%';
+        }
+    });
+}
     // 画面のバーを更新（HTMLのIDが easy-bar-fill, middle-bar-fill, hard-bar-fill となっている前提）
     ['easy', 'middle', 'hard'].forEach(lvl => {
         const pct = stats[lvl].total > 0 ? Math.round((stats[lvl].correct / stats[lvl].total) * 100) : 0;
