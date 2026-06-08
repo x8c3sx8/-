@@ -94,14 +94,18 @@
         <h1>介護業界 基礎知識マスター180</h1>
         <div class="subtitle">全180問の巨大問題プールから、毎回ランダムに15問をスカウト！</div>
         
-        <div class="total-summary-box">
-            <button class="reset-btn" onclick="resetTotalStats()">データをリセット</button>
-            <div class="total-summary-title">📊 裏の全180問 に対する累計マスター率</div>
-            <div class="total-bar-container">
-                <div id="total-bar-fill" class="total-bar-fill"></div>
-                <div id="total-bar-text" class="total-bar-text">まだ解答データがありません。クイズに挑戦してみましょう！</div>
-            </div>
-        </div>
+<div class="total-summary-box">
+    <p class="total-summary-title">■ 難易度別マスター状況</p>
+    
+    <p style="margin: 10px 0 5px; font-size: 13px;">初級 (Easy)</p>
+    <div style="background:#ddd; height:8px;"><div id="easy-bar-fill" style="width:0%; height:100%; background:#48bb78;"></div></div>
+    
+    <p style="margin: 10px 0 5px; font-size: 13px;">中級 (Middle)</p>
+    <div style="background:#ddd; height:8px;"><div id="middle-bar-fill" style="width:0%; height:100%; background:#ecc94b;"></div></div>
+    
+    <p style="margin: 10px 0 5px; font-size: 13px;">上級 (Hard)</p>
+    <div style="background:#ddd; height:8px;"><div id="hard-bar-fill" style="width:0%; height:100%; background:#f56565;"></div></div>
+</div>
 
         <p class="menu-desc">挑戦したいコースを選ぶと、その難易度の貯蔵庫から15問がランダムに選ばれます！</p>
         
