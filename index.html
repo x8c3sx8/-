@@ -446,7 +446,6 @@ function initQuiz() {
         card.innerHTML = `
             <div class="q-no ${badgeMap[currentLevel]}">第 ${idx + 1} 問 / 15問 【${labelMap[currentLevel]}】</div>
             <div class="question">${data.q}</div>
-            <div class="hint-box">💡 <strong>ヒント・着眼点:</strong><br>${data.hint}</div>
             <div class="options">${optionsHTML}</div>
         `;
         container.appendChild(card);
