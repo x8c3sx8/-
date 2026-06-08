@@ -581,29 +581,29 @@ function showResult() {
 
 // 全180問中の正答率（コンプリート率）を計算してトップのUIに反映する関数
 function updateTotalStatsUI() {
-    const savedData = JSON.parse(localStorage.getItem('kaigoGachaStats')) || {};
+    const saved = JSON.parse(localStorage.getItem('kaigoGachaStats')) || {};
     
-    const solvedIds = Object.keys(savedData);
-    const totalSolved = solvedIds.length;
-    
-    let totalCorrect = 0;
-    solvedIds.forEach(id => {
-        if(savedData[id] === 1) totalCorrect++;
+    ['easy', 'normal', 'hard'].forEach(lvl => {
+        let total = 0, correct = 0;
+        
+        // データの集計
+        if (masterQuizData[lvl]) {
+            masterQuizData[lvl].forEach(q => {
+                total++;
+                if (saved[q.id] === 1) correct++;
+            });
+        }
+        
+        const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+        const bar = document.getElementById(lvl + '-bar-fill');
+        
+        if (bar) {
+            bar.style.width = pct + '%';
+            console.log(lvl + 'の進捗率を' + pct + '%に設定しました');
+        } else {
+            console.error('ID: ' + lvl + '-bar-fill が見つかりません！HTMLを確認してください');
+        }
     });
-    
-    const barFill = document.getElementById('total-bar-fill');
-    const barText = document.getElementById('total-bar-text');
-    
-    const totalQuestions = 180; // 全180問
-    
-    if (totalSolved > 0) {
-        const pct = Math.round((totalCorrect / totalQuestions) * 100);
-        barFill.style.width = `${pct}%`;
-        barText.innerText = `全 180 問中 ${totalCorrect} 問 を現在マスター！ （全体のコンプリート率: ${pct}% / 出会った問題: ${totalSolved}問）`;
-    } else {
-        barFill.style.width = "0%";
-        barText.innerText = "まだ解答データがありません。";
-    }
 }
 
 // 累計成績をクリアしたい場合のリセット関数
