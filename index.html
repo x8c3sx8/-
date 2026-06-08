@@ -1,43 +1,47 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>介護業界 基礎知識マスター180</title>
-<style>
-    body { font-family: sans-serif; background: #f4f7f6; padding: 20px; line-height: 1.6; }
-    .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .bar-bg { background: #e0e0e0; height: 10px; border-radius: 5px; margin: 10px 0; }
-    .bar-fill { background: #4a90e2; height: 100%; border-radius: 5px; width: 0%; transition: 0.5s; }
-    button { display: block; width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-    .btn-easy { background: #27ae60; color: white; }
-    .btn-normal { background: #2980b9; color: white; }
-    .btn-hard { background: #d35400; color: white; }
-    .quiz-card { display: none; }
-    .quiz-card.active { display: block; }
-    .options label { display: block; padding: 10px; border: 1px solid #ddd; margin: 5px 0; cursor: pointer; }
-    .exp { background: #f9f9f9; padding: 10px; border-left: 4px solid #4a90e2; margin-top: 10px; font-size: 0.9em; }
-</style>
+    <meta charset="UTF-8">
+    <title>介護知識マスター180</title>
+    <style>
+        :root {
+            --primary: #48bb78; --secondary: #4299e1; --accent: #ed8936;
+            --bg: #f7fafc; --text: #2d3748;
+        }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+        .card { max-width: 650px; margin: 20px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        h1 { text-align: center; color: var(--primary); margin-bottom: 30px; }
+        .btn-group { display: grid; gap: 15px; }
+        button { 
+            padding: 18px; border: none; border-radius: 10px; cursor: pointer; 
+            font-size: 16px; font-weight: bold; color: white; transition: transform 0.2s, opacity 0.2s;
+        }
+        button:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-easy { background: var(--primary); }
+        .btn-normal { background: var(--secondary); }
+        .btn-hard { background: var(--accent); }
+        .quiz-item { margin-bottom: 25px; border-bottom: 1px solid #edf2f7; padding-bottom: 20px; }
+        .option-btn { background: #edf2f7; color: var(--text); margin: 5px 0; display: block; width: 100%; text-align: left; }
+        .exp { background: #f0fff4; padding: 15px; border-radius: 8px; margin-top: 10px; display: none; border-left: 5px solid var(--primary); }
+    </style>
 </head>
 <body>
 
-<div class="container" id="menu">
+<div class="card" id="menu">
     <h1>介護知識マスター180</h1>
-    <div id="stats">
-        初級: <div class="bar-bg"><div id="easy-bar" class="bar-fill"></div></div>
-        中級: <div class="bar-bg"><div id="normal-bar" class="bar-fill"></div></div>
-        上級: <div class="bar-bg"><div id="hard-bar" class="bar-fill"></div></div>
+    <div class="btn-group">
+        <button class="btn-easy" onclick="startQuiz('easy')">初級コース (15問)</button>
+        <button class="btn-normal" onclick="startQuiz('normal')">中級コース (15問)</button>
+        <button class="btn-hard" onclick="startQuiz('hard')">上級コース (15問)</button>
     </div>
-    <button class="btn-easy" onclick="start('easy')">初級コース (15問)</button>
-    <button class="btn-normal" onclick="start('normal')">中級コース (15問)</button>
-    <button class="btn-hard" onclick="start('hard')">上級コース (15問)</button>
 </div>
 
-<div class="container" id="quiz" style="display:none;"></div>
+<div class="card" id="quiz-area" style="display:none;">
+    <div id="quiz-content"></div>
+    <button style="background: #a0aec0; width: 100%;" onclick="location.reload()">メニューに戻る</button>
+</div>
 
 <script>
-// 問題データ（サンプル各1問ずつ、実際はここに各60問ずつ記述します）
-const masterQuizData = {
     easy: [
         { q: "介護保険サービスを利用できるのは原則何歳から？", opt: ["40歳", "60歳", "65歳", "70歳"], ans: 2, exp: "65歳以上が第1号被保険者です。" },
         { q: "介護保険の自己負担割合は原則何割？", opt: ["1割", "2割", "3割", "10割"], ans: 0, exp: "原則は1割負担です。" },
@@ -226,39 +230,29 @@ normal: [
 ]
 };
 
-let currentQ = [], score = 0, idx = 0;
-
-function start(lvl) {
-    currentQ = data[lvl].sort(() => 0.5 - Math.random()).slice(0, 15);
-    render();
-}
-
-function render() {
+function startQuiz(level) {
+    const questions = masterQuizData[level].sort(() => 0.5 - Math.random()).slice(0, 15);
     document.getElementById('menu').style.display = 'none';
-    const qDiv = document.getElementById('quiz');
-    qDiv.style.display = 'block';
-    qDiv.innerHTML = currentQ.map((item, i) => `
-        <div class="quiz-card ${i==0?'active':''}" id="q${i}">
-            <p>第${i+1}問: ${item.q}</p>
-            <div class="options">
-                ${item.opt.map((o, oi) => `<label><input type="radio" name="a${i}" onclick="check(${i}, ${oi})"> ${o}</label>`).join('')}
-            </div>
-            <div id="exp${i}" style="display:none" class="exp">解説: ${item.exp}</div>
-        </div>
-    `).join('') + `<button onclick="location.reload()">メニューに戻る</button>`;
+    document.getElementById('quiz-area').style.display = 'block';
+    
+    let html = `<h2>${level.toUpperCase()}コース</h2>`;
+    questions.forEach((q, i) => {
+        html += `<div class="quiz-item">
+            <p><strong>Q${i+1}: ${q.q}</strong></p>
+            ${q.opt.map((o, oi) => `<button class="option-btn" onclick="showExp(${i}, ${oi}, ${q.ans})">${o}</button>`).join('')}
+            <div id="exp${i}" class="exp"><strong>解説:</strong> ${q.exp}</div>
+        </div>`;
+    });
+    document.getElementById('quiz-content').innerHTML = html;
 }
 
-function check(i, choice) {
-    document.getElementById('exp' + i).style.display = 'block';
-    if(choice === currentQ[i].ans) score++;
+function showExp(qIdx, choice, ans) {
+    const expDiv = document.getElementById('exp' + qIdx);
+    expDiv.style.display = 'block';
+    // 正解・不正解の視覚フィードバック
+    if(choice === ans) expDiv.style.borderColor = "#48bb78";
+    else expDiv.style.borderColor = "#e53e3e";
 }
-
-// 進捗表示機能など
-function updateStats() {
-    // localStorageで保存し、bar-fillのwidthを更新する処理
-}
-
-updateStats();
 </script>
 </body>
 </html>
