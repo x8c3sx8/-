@@ -586,29 +586,26 @@ function showResult() {
 function updateTotalStatsUI() {
     const savedData = JSON.parse(localStorage.getItem('kaigoGachaStats')) || {};
     
-    const solvedIds = Object.keys(savedData);
-    const totalSolved = solvedIds.length;
+    // 難易度ごとに正答数を集計
+    const stats = { easy: { total: 0, correct: 0 }, middle: { total: 0, correct: 0 }, hard: { total: 0, correct: 0 } };
     
-    let totalCorrect = 0;
-    solvedIds.forEach(id => {
-        if(savedData[id] === 1) totalCorrect++;
+    // 全問題（masterQuizData）から、それぞれ正解しているか判定
+    masterQuizData.forEach(q => {
+        if (q.level && stats[q.level]) {
+            stats[q.level].total++;
+            if (savedData[q.id] === 1) {
+                stats[q.level].correct++;
+            }
+        }
     });
-    
-    const barFill = document.getElementById('total-bar-fill');
-    const barText = document.getElementById('total-bar-text');
-    
-    const totalQuestions = 180; // 全180問
-    
-    if (totalSolved > 0) {
-        const pct = Math.round((totalCorrect / totalQuestions) * 100);
-        barFill.style.width = `${pct}%`;
-        barText.innerText = `全 180 問中 ${totalCorrect} 問 を現在マスター！ （全体のコンプリート率: ${pct}% / 出会った問題: ${totalSolved}問）`;
-    } else {
-        barFill.style.width = "0%";
-        barText.innerText = "まだ解答データがありません。";
-    }
-}
 
+    // 画面のバーを更新
+    ['easy', 'middle', 'hard'].forEach(lvl => {
+        const pct = stats[lvl].total > 0 ? Math.round((stats[lvl].correct / stats[lvl].total) * 100) : 0;
+        const fill = document.getElementById(`${lvl}-bar-fill`);
+        if (fill) fill.style.width = `${pct}%`;
+    });
+}
 // 累計成績をクリアしたい場合のリセット関数
 function resetTotalStats() {
     if(confirm("これまでの全180問の累計マスター記録をすべて消去します。よろしいですか？")) {
